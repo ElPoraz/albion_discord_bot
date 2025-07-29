@@ -80,6 +80,7 @@ module.exports = {
       map,
       expiresAt,
       emoji,
+      createdBy: interaction.user.username,
     });
 
     await interaction.reply({

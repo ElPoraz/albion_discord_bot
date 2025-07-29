@@ -60,7 +60,7 @@ function populateEmbeds(objectives, now) {
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
     const time = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    const label = `${obj.emoji} ${capitalize(obj.type)} ${obj.quality} - **${obj.map}** — ⏱️ ${time} min restantes`;
+    const label = `${obj.emoji} ${capitalize(obj.type)} ${obj.quality} - **${obj.map}** — ⏱️ ${time} min restantes\n*created by ${obj.createdBy}*`;
 
     if (obj.type === 'orbe') {
       embeds.orbe.addFields({ name: '\u200B', value: label });
