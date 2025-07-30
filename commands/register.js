@@ -20,7 +20,7 @@ module.exports = {
       const response = await axios.get(`https://gameinfo-ams.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(pseudo)}`);
 
       console.log(`📄 Données du joueur récupérées :`, response.data);
-      const playerData = response.data;
+      const playerData = response.data[1];
 
       // Vérifie que le joueur est dans la guilde "O M B R A"
       if (playerData.GuildName !== "O M B R A") {
