@@ -3,6 +3,10 @@ const { Client, Collection, GatewayIntentBits, EmbedBuilder } = require('discord
 const fs = require('node:fs');
 const path = require('node:path');
 
+const { initDb } = require('./db');
+await initDb(); // Avant client.login()
+
+
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
 });
