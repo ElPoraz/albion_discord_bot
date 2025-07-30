@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
-const { registerUser } = require('../db'); // Vérifie que le chemin est correct selon ta structure
+// const { registerUser } = require('../db'); // Vérifie que le chemin est correct selon ta structure
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -45,7 +45,7 @@ module.exports = {
       }
 
       // Enregistre en base
-      await registerUser(interaction.user.id, pseudo);
+      // await registerUser(interaction.user.id, pseudo);
 
       return interaction.reply({
         content: `✅ Bienvenue dans la guilde **O M B R A**, ${pseudo} ! Tu as reçu le rôle membre.`,
