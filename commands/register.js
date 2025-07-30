@@ -15,7 +15,11 @@ module.exports = {
     const pseudo = interaction.options.getString('pseudo');
 
     try {
-      const response = await axios.get(`https://gameinfo-ams.albiononline.com/api/gameinfo/players/${encodeURIComponent(pseudo)}`);
+        console.log(`🔍 Recherche du joueur : ${pseudo}`);
+
+      const response = await axios.get(`https://gameinfo-ams.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(pseudo)}`);
+
+      console.log(`📄 Données du joueur récupérées :`, response.data);
       const playerData = response.data;
 
       // Vérifie que le joueur est dans la guilde "O M B R A"
