@@ -41,7 +41,7 @@ module.exports = {
         await registerChannel.permissionOverwrites.edit(member, { ViewChannel: false });
       }
 
-      return interaction.reply({ content: `Bienvenue **${pseudo}** ! Rôle membre attribué et enregistré en base.`, ephemeral: true });
+      return interaction.reply({ content: `Bienvenue **${pseudo}** ! Rôle membre attribué et enregistré en base!`, ephemeral: true });
 
     } catch (error) {
       console.error(error);
