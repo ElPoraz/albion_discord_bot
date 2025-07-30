@@ -15,31 +15,34 @@ module.exports = {
     const pseudo = interaction.options.getString('pseudo');
 
     try {
-        console.log(`🔍 Recherche du joueur : ${pseudo}`);
+      console.log(`🔍 Recherche du joueur : ${pseudo}`);
 
       const response = await axios.get(`https://gameinfo-ams.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(pseudo)}`);
-
       console.log(`📄 Données du joueur récupérées :`, response.data);
-      const playerData = response.data[1];
 
-      // Vérifie que le joueur est dans la guilde "O M B R A"
-      if (playerData.GuildName !== "O M B R A") {
+      const player = response.data.players?.find(p => p.Name.toLowerCase() === pseudo.toLowerCase());
+
+      if (!player) {
+        return interaction.reply({
+          content: `❌ Joueur **${pseudo}** introuvable.`,
+          ephemeral: true
+        });
+      }
+
+      if (player.GuildName !== "O M B R A") {
         return interaction.reply({
           content: `❌ Le joueur **${pseudo}** n'est pas membre de la guilde **O M B R A**.`,
           ephemeral: true
         });
       }
 
-      // Récupère le rôle "membre"
       const memberRole = interaction.guild.roles.cache.find(role => role.name === "membre");
       if (!memberRole) {
         return interaction.reply({ content: `⚠️ Rôle 'membre' introuvable.`, ephemeral: true });
       }
 
-      // Ajoute le rôle au membre
       await interaction.member.roles.add(memberRole);
 
-      // (Optionnel) Cache le channel d’enregistrement à l'utilisateur
       const registerChannel = interaction.channel;
       if (registerChannel) {
         await registerChannel.permissionOverwrites.edit(interaction.member, {
