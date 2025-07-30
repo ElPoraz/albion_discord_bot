@@ -3,10 +3,7 @@ const { Client, Collection, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, S
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { initDb } = require('./db');
-
 async function main() {
-  await initDb(); // OK ici, dans une fonction async
 
   const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
