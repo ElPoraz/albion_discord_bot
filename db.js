@@ -1,43 +1,55 @@
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const path = require('path');
 
-const db = new sqlite3.Database(path.join(__dirname, 'data.sqlite'));
+// Crée ou ouvre la base dans le dossier courant
+const db = new Database(path.join(__dirname, 'database.sqlite'));
 
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
+// Création de la table si elle n'existe pas
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS users (
     discordId TEXT PRIMARY KEY,
     albionPseudo TEXT,
     joinedAt INTEGER,
     reviewCount INTEGER DEFAULT 0
-  )`);
-});
+  )
+`).run();
 
+/**
+ * Enregistre ou met à jour un utilisateur.
+ */
 function registerUser(discordId, albionPseudo) {
-  return new Promise((resolve, reject) => {
-    const now = Date.now();
-    db.run(
-      `INSERT OR REPLACE INTO users (discordId, albionPseudo, joinedAt, reviewCount) VALUES (?, ?, ?, COALESCE((SELECT reviewCount FROM users WHERE discordId = ?), 0))`,
-      [discordId, albionPseudo, now, discordId],
-      function(err) {
-        if (err) reject(err);
-        else resolve();
-      }
-    );
-  });
+  const now = Date.now();
+
+  // Récupère le compteur actuel s'il existe
+  const existing = db.prepare('SELECT reviewCount FROM users WHERE discordId = ?').get(discordId);
+  const reviewCount = existing ? existing.reviewCount : 0;
+
+  db.prepare(`
+    INSERT OR REPLACE INTO users (discordId, albionPseudo, joinedAt, reviewCount)
+    VALUES (?, ?, ?, ?)
+  `).run(discordId, albionPseudo, now, reviewCount);
 }
 
+/**
+ * Récupère un utilisateur par son ID Discord.
+ */
 function getUser(discordId) {
-  return new Promise((resolve, reject) => {
-    db.get(`SELECT * FROM users WHERE discordId = ?`, [discordId], (err, row) => {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+  return db.prepare('SELECT * FROM users WHERE discordId = ?').get(discordId);
 }
 
-// Ajoute d’autres fonctions utiles au besoin...
+/**
+ * Incrémente le compteur de reviews pour un utilisateur.
+ */
+function incrementReview(discordId) {
+  db.prepare(`
+    UPDATE users
+    SET reviewCount = reviewCount + 1
+    WHERE discordId = ?
+  `).run(discordId);
+}
 
 module.exports = {
   registerUser,
   getUser,
+  incrementReview,
 };
