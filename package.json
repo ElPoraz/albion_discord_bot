@@ -21,8 +21,5 @@
     "pg": "^8.16.3",
     "uuid": "^11.1.0",
     "concurrently": "^9.2.0"
-  },
-  "devDependencies": {
-    "concurrently": "^9.2.0"
   }
 }
