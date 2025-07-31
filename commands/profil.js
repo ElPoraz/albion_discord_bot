@@ -73,7 +73,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(`📊 Profil de ${target.username}`)
       .addFields(
-        { name: '🧩 Attendances (+25 joueurs)', value: attendance.toString(), inline: true },
+        { name: '🧩 Attendances (+20 joueurs)', value: attendance.toString(), inline: true },
         { name: '📝 Reviews', value: profile.reviews.toString(), inline: true }
       )
       .setColor(0x7289da)
