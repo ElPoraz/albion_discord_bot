@@ -6,6 +6,17 @@ module.exports = {
     .setDescription('Supprime un objectif par catégorie'),
 
   async execute(interaction, objectives) {
+
+    const ALLOWED_CHANNEL_ID = "1400150970356334612"; // ID du salon autorisé pour la commande
+
+    if (interaction.channel.id !== ALLOWED_CHANNEL_ID) {
+      return interaction.reply({
+        content: `❌ Cette commande ne peut être utilisée que dans <#${ALLOWED_CHANNEL_ID}>.`,
+        ephemeral: true
+      });
+    }
+
+    
     const categoriesMap = {};
 
     for (const obj of objectives) {

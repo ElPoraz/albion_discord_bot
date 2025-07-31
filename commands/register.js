@@ -14,8 +14,16 @@ module.exports = {
 
   async execute(interaction) {
     const discordUserId = interaction.user.id;
-    const discordUsername = interaction.user.username;
     const pseudo = interaction.options.getString('pseudo');
+
+    const ALLOWED_CHANNEL_ID = "1400150970356334612"; // ID du salon autorisé pour la commande
+
+    if (interaction.channel.id !== ALLOWED_CHANNEL_ID) {
+      return interaction.reply({
+        content: `❌ Cette commande ne peut être utilisée que dans <#${ALLOWED_CHANNEL_ID}>.`,
+        ephemeral: true
+      });
+    }
 
     // Vérifier si ce compte Discord est déjà enregistré
     const existingProfile = await userProfiles.get(discordUserId);
