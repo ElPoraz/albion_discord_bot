@@ -24,7 +24,7 @@ module.exports = {
         ephemeral: true
       });
     }
-    
+
     const target = interaction.options.getUser('joueur') || interaction.user;
     const targetId = target.id;
 
@@ -50,7 +50,7 @@ module.exports = {
     try {
       const startDate = "2025-07-30"; // ← Peut être rendu dynamique si besoin
       const encodedName = encodeURIComponent(playerName);
-      const url = `https://europe.albionbb.com/guilds/tyKvJaFBSuKmMhAGi3JbXQ/attendance?minPlayers=25&search=${encodedName}&start=${startDate}&end=`;
+      const url = `https://europe.albionbb.com/guilds/tyKvJaFBSuKmMhAGi3JbXQ/attendance?minPlayers=20&search=${encodedName}&start=${startDate}&end=`;
 
       const { data: html } = await axios.get(url);
       const $ = cheerio.load(html);
