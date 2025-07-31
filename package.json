@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"node index.js\" \"node web.js\""
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,11 +13,8 @@
   "dependencies": {
     "axios": "^1.11.0",
     "cheerio": "^1.1.2",
-    "concurrently": "^9.2.0",
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
-    "ejs": "^3.1.10",
-    "express": "^5.1.0",
     "pg": "^8.16.3",
     "uuid": "^11.1.0"
   }
