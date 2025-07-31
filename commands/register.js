@@ -1,10 +1,11 @@
 const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
+const userProfiles = require('../db/userProfiles'); // <-- Version base de données
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('register')
-    .setDescription('Enregistre votre pseudo Albion et obtient le rôle membre')
+    .setDescription('Enregistre votre pseudo Albion et obtient le rôle Recrues')
     .addStringOption(option =>
       option.setName('pseudo')
         .setDescription('Votre pseudo Albion Online')
@@ -12,14 +13,31 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const discordUserId = interaction.user.id;
+    const discordUsername = interaction.user.username;
     const pseudo = interaction.options.getString('pseudo');
 
+    // Vérifier si ce compte Discord est déjà enregistré
+    const existingProfile = await userProfiles.get(discordUserId);
+    if (existingProfile) {
+      return interaction.reply({
+        content: `❌ Ton compte Discord est déjà lié au pseudo Albion **${existingProfile.albion_name}**.`,
+        ephemeral: true
+      });
+    }
+
+    // Vérifier si ce pseudo Albion est déjà lié à un autre compte Discord
+    const pseudoUsed = await userProfiles.getByAlbionName(pseudo);
+    if (pseudoUsed) {
+      return interaction.reply({
+        content: `❌ Le pseudo **${pseudo}** est déjà lié au compte Discord **<@${pseudoUsed.discord_id}>**.`,
+        ephemeral: true
+      });
+    }
+
     try {
-      console.log(`🔍 Recherche du joueur : ${pseudo}`);
-
+      // Vérifier via l'API Albion que le joueur existe et est bien dans la guilde
       const response = await axios.get(`https://gameinfo-ams.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(pseudo)}`);
-      console.log(`📄 Données du joueur récupérées :`, response.data);
-
       const player = response.data.players?.find(p => p.Name.toLowerCase() === pseudo.toLowerCase());
 
       if (!player) {
@@ -36,22 +54,19 @@ module.exports = {
         });
       }
 
-      const memberRole = interaction.guild.roles.cache.find(role => role.name === "membre");
+      const memberRole = interaction.guild.roles.cache.find(role => role.name === "Recrues");
       if (!memberRole) {
-        return interaction.reply({ content: `⚠️ Rôle 'membre' introuvable.`, ephemeral: true });
+        return interaction.reply({ content: `⚠️ Rôle 'Recrues' introuvable.`, ephemeral: true });
       }
 
       await interaction.member.roles.add(memberRole);
+      await interaction.member.roles.remove(interaction.guild.roles.cache.find(role => role.name === "Attente recrutement"));
 
-      const registerChannel = interaction.channel;
-      if (registerChannel) {
-        await registerChannel.permissionOverwrites.edit(interaction.member, {
-          ViewChannel: false
-        });
-      }
+      // Enregistrement en base de données
+      await userProfiles.set(discordUserId, pseudo, 0, 0);
 
       return interaction.reply({
-        content: `✅ Bienvenue dans la guilde **O M B R A**, ${pseudo} ! Tu as reçu le rôle membre.`,
+        content: `✅ Bienvenue dans la guilde **O M B R A**, ${pseudo} ! Tu as reçu le rôle **Recrues**.`,
         ephemeral: true
       });
 

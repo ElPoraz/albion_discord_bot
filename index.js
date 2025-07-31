@@ -2,6 +2,8 @@ require('dotenv').config();
 const { Client, Collection, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
+const userProfiles = require('./db/userProfiles');
+
 
 async function main() {
 
