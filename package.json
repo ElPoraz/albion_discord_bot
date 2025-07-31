@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "start": "concurrently \"node index.js\" \"node web.js\"",
     "start:web": "node web.js"
   },
   "keywords": [],
@@ -21,5 +20,8 @@
     "express": "^5.1.0",
     "pg": "^8.16.3",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
   }
 }
